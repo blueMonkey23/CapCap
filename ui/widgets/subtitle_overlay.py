@@ -19,6 +19,7 @@ class SubtitleOverlayItem(QGraphicsItem):
         # text paint pass to be disabled so both renderers do not draw it.
         self.render_text = True
         self._suppressed = False
+        self._editable = False
         self.font_name = "Segoe UI"
         self.font_size = 20
         self.font_color = QColor(255, 255, 255)
@@ -97,6 +98,18 @@ class SubtitleOverlayItem(QGraphicsItem):
         self._suppressed = bool(suppressed)
         if self._suppressed:
             self.hide()
+
+    def set_editable(self, editable: bool):
+        """Enable subtitle movement only while the timeline is in edit mode.
+
+        The MPV preview uses a top-level drag overlay; this fallback uses the
+        graphics item's native movable flag instead.  Both accept the same
+        call from the playback/review controller.
+        """
+        self._editable = bool(editable)
+        self.setFlag(QGraphicsItem.ItemIsMovable, self._editable)
+        self.setFlag(QGraphicsItem.ItemIsFocusable, self._editable)
+        self.setCursor(Qt.OpenHandCursor if self._editable else Qt.ArrowCursor)
 
     def _update_height(self):
         line_count = max(1, len(self.current_lines))

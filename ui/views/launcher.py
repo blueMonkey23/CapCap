@@ -965,20 +965,21 @@ class LauncherWindow(QDialog):
         <h3 style='color:#8ad7ff;'>Tutorial / Resource Setup</h3>
         <p>Download the resource, then place it in the matching CapCap folder:</p>
         <table cellspacing='6'>
-        <tr><td><b>Whisper models</b></td><td><code>CapCap\\models\\faster_whisper</code></td></tr>
-        <tr><td><b>CUDA / cuDNN runtime</b></td><td><code>CapCap\\bin\\cuda12_fw</code></td></tr>
-        <tr><td><b>SenseVoice</b></td><td>Bundled by default in <code>CapCap\\models\\sensevoice</code></td></tr>
+        <tr><td><b>Whisper Medium</b></td><td>Extract the model ZIP so its <code>models--Systran--faster-whisper-medium</code> folder is directly inside <code>CapCap\\models\\faster_whisper</code>.</td></tr>
+        <tr><td><b>CUDA Acceleration Pack</b></td><td>Extract <code>cuda12_fw.zip</code> into <code>CapCap\\bin</code>; verify <code>CapCap\\bin\\cuda12_fw\\cublas64_12.dll</code> exists.</td></tr>
+        <tr><td><b>SenseVoice</b></td><td>Extract the model archive and place <code>model.int8.onnx</code> and <code>tokens.txt</code> directly in <code>CapCap\\models\\sensevoice</code>.</td></tr>
         <tr><td><b>RapidOCR models</b></td><td>Bundled by default; optional files use <code>CapCap\\rapidocr\\models</code></td></tr>
-        <tr><td><b>Piper voices</b></td><td><code>CapCap\\models\\piper</code> (Vietnamese) or <code>CapCap\\models\\piper-en</code> (English)</td></tr>
+        <tr><td><b>Piper voices</b></td><td>Place each <code>.onnx</code> voice and its matching <code>.onnx.json</code> directly in <code>CapCap\\models\\piper</code> (Vietnamese) or <code>CapCap\\models\\piper-en</code> (English).</td></tr>
+        <tr><td><b>MPV Preview Pack</b></td><td>Download <code>mpv-dev-x86_64-*.7z</code>, then extract its contents into <code>CapCap\\bin\\mpv</code>. Verify <code>libmpv-2.dll</code> is directly in that folder.</td></tr>
         <tr><td><b>Speaker Detection</b></td><td><code>CapCap\\models\\pyannote</code></td></tr>
         </table>
-        <p>Resource Manager provides download links for supported optional resources. Extract downloaded archives into the folder shown above.</p>
+        <p>Resource Manager provides download links and shows whether each item is installed. Avoid an extra nested folder after extraction: the expected file must be directly inside the target folder shown above.</p>
 
         <h3 style='color:#8ad7ff;'>How to Setup</h3>
         <p>CapCap has two processing modes: <b>CPU Mode</b> and <b>GPU Mode</b>.</p>
-        <p><b>CPU Mode:</b> Ready to use immediately without additional downloads. Optional resources add more models, voices, or features.</p>
-        <p><b>GPU Mode:</b> Requires the <b>GPU Acceleration Pack</b>. Download and extract it into <code>CapCap\\bin</code>. Whisper Medium is optional but recommended for better GPU transcription quality.</p>
-        <p>Other resources are optional enhancements. CapCap works without them unless you select a feature that needs one.</p>
+        <p><b>CPU Mode:</b> Requires the local <b>SenseVoice</b> model and runtime. Piper voices are optional, but needed for offline voiceover.</p>
+        <p><b>GPU Mode:</b> Requires an NVIDIA driver, the <b>GPU Acceleration Pack</b>, and the local <b>SenseVoice</b> model/runtime. Whisper Medium is recommended for higher-quality GPU transcription.</p>
+        <p><b>Interactive preview:</b> Install the MPV Preview Pack to move and resize Blur, Logo, Mask, and Text layers directly in the preview. Without it, CapCap uses the basic Qt preview.</p>
 
         <h3 style='color:#8ad7ff;'>How to Use</h3>
         <p><b>Left side:</b> Workflow progress, configuration, and options.</p>
