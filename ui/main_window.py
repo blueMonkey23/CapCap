@@ -6577,6 +6577,16 @@ class VideoTranslatorGUI(QMainWindow):
         """Show the draggable mask overlay for the selected mask layer."""
         if not hasattr(self, "video_view"):
             return
+        # Interactive resize handles are supplied by the native MPV overlay.
+        # The Qt Multimedia fallback can still retain/export mask layers, but
+        # it has no top-level mask editor or the associated signals.  Avoid
+        # repeatedly throwing while a mask layer is selected.
+        required_mask_editor_api = (
+            "maskMoved", "maskRegionChanged", "maskDeleted", "set_mask_regions",
+        )
+        if not all(hasattr(self.video_view, name) for name in required_mask_editor_api):
+            self._mask_overlay_layer = layer
+            return
         if not bool(getattr(self, "_mask_track_preview_visible", True)):
             # Hide/Show controls both the visual effect and its edit chrome.
             # A later focus/selection event must not resurrect either one.

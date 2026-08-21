@@ -197,6 +197,19 @@ class QtMediaPlayerBackend(QObject):
     def clear_blur_region(self):
         return None
 
+    def set_mask_region(self, mask_region=None):
+        """Keep the MPV preview API callable on the Qt fallback backend.
+
+        Mask compositing is baked into Fast Preview/export by FFmpeg; Qt's
+        QMediaPlayer can still play the source safely without that transient
+        overlay.
+        """
+        return None
+
+    def clear_mask_region(self):
+        """Clear the optional MPV mask effect when using Qt Multimedia."""
+        return None
+
     def set_color_filter_state(self, state=None):
         return None
 

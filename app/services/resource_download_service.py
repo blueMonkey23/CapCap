@@ -461,13 +461,14 @@ class ResourceDownloadService:
                 ("sensevoice:model", "SenseVoice model"),
                 ("sensevoice:runtime", "SenseVoice runtime"),
             ]
-        # GPU mode runs Faster-Whisper.  SenseVoice is an optional
-        # transcription engine selected later in the project settings, so
-        # its local model must not prevent the launcher from enabling GPU
-        # mode for a valid CUDA/Whisper setup.
+        # Keep the bundled SenseVoice model available in both launch modes.
+        # It is the default local ASR fallback and is also used when users
+        # switch engines from a GPU/Faster-Whisper project.
         return [
             ("cuda:whisper", "CUDA runtime pack"),
             ("nvidia_driver", "NVIDIA driver"),
+            ("sensevoice:model", "SenseVoice model"),
+            ("sensevoice:runtime", "SenseVoice runtime"),
         ]
 
     def is_requirement_met(self, requirement_id: str) -> bool:
@@ -541,6 +542,29 @@ class ResourceDownloadService:
                 "description": "Required for GPU Mode. Provides the CUDA runtime used to accelerate supported local processing.",
             },
             {
+                "id": "sensevoice:model",
+                "name": "SenseVoice ASR Model",
+                "kind": "sensevoice",
+                "required_for": "CPU and GPU Mode",
+                "status": "installed" if self.is_resource_installed("sensevoice:model") else "missing",
+                "target_dir": models_path("sensevoice"),
+                "download_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17.tar.bz2",
+                "expected_filename": "model.int8.onnx and tokens.txt",
+                "auto_download_supported": False,
+                "description": "Default local ASR fallback. Extract the archive, then place model.int8.onnx and tokens.txt directly in this folder.",
+            },
+            {
+                "id": "mpv:preview",
+                "name": "MPV Preview Pack (libmpv)",
+                "kind": "preview",
+                "status": "installed" if self.is_resource_installed("mpv:preview") else "missing",
+                "target_dir": bin_path("mpv"),
+                "download_url": "https://github.com/shinchiro/mpv-winbuild-cmake/releases",
+                "expected_filename": "mpv-dev-x86_64-*.7z → libmpv-2.dll",
+                "auto_download_supported": False,
+                "description": "Enables interactive Blur, Logo, Mask, and Text editing in the live preview. Extract the contents of mpv-dev-x86_64 directly into this folder.",
+            },
+            {
                 "id": "diarization:segmentation",
                 "name": "Speaker Diarization Segmentation (Sherpa-ONNX)",
                 "kind": "diarization",
@@ -609,7 +633,17 @@ class ResourceDownloadService:
             fw_dir = join_root("bin", "cuda12_fw")
             return os.path.exists(os.path.join(fw_dir, "cublas64_12.dll"))
         if resource_id == "sensevoice:model":
-            return os.path.isfile(os.path.join(models_path("sensevoice"), "model.int8.onnx"))
+            sensevoice_dir = models_path("sensevoice")
+            return (
+                os.path.isfile(os.path.join(sensevoice_dir, "model.int8.onnx"))
+                and os.path.isfile(os.path.join(sensevoice_dir, "tokens.txt"))
+            )
+        if resource_id == "mpv:preview":
+            mpv_dir = bin_path("mpv")
+            return any(
+                os.path.isfile(os.path.join(mpv_dir, filename))
+                for filename in ("libmpv-2.dll", "mpv-2.dll")
+            )
         if resource_id == "diarization:segmentation":
             return os.path.isfile(self._speaker_diarization_segmentation_path())
         if resource_id == "diarization:embedding":
