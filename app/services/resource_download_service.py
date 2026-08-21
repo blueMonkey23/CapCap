@@ -559,7 +559,7 @@ class ResourceDownloadService:
                 "kind": "preview",
                 "status": "installed" if self.is_resource_installed("mpv:preview") else "missing",
                 "target_dir": bin_path("mpv"),
-                "download_url": "https://github.com/shinchiro/mpv-winbuild-cmake/releases",
+                "download_url": "https://github.com/shinchiro/mpv-winbuild-cmake/releases/download/20260814/mpv-dev-x86_64-20260814-git-7b8915bc1d.7z",
                 "expected_filename": "mpv-dev-x86_64-*.7z → libmpv-2.dll",
                 "auto_download_supported": False,
                 "description": "Enables interactive Blur, Logo, Mask, and Text editing in the live preview. Extract the contents of mpv-dev-x86_64 directly into this folder.",
